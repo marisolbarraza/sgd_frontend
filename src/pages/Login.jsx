@@ -1,6 +1,22 @@
+import { useState } from "react";
 import { BsPersonCircle } from "react-icons/bs";
 
 function Login() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(false); 
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+    
+        // Aquí debes agregar la lógica de validación correcta
+        if (email !== 'user@example.com' || password !== 'password') {
+            setError(true);
+        } else {
+            setError(false);
+          // Lógica para iniciar sesión
+        }
+      };
     return (
     <div className='flex h-screen '>
         <div className=' w-1/2 bg-[#345071] flex-col justify-center items-center hidden lg:flex'>
@@ -15,12 +31,13 @@ function Login() {
                         <BsPersonCircle className='w-16 h-16 text-[#345071] ' />
                         <h2 className='text-2xl font-semibold'>Iniciar sesión</h2>
                         <div>
-                            <form action="" className='flex flex-col gap-6'>
-                                <input className='w-72 p-3 rounded border-[#757873] border-2' type="text" placeholder='Email' required/>
-                                <input className='w-72 p-3 rounded border-[#757873] border-2' type="password" placeholder='Contraseña'required />
+                            <form action="" onSubmit={handleSubmit} className='flex flex-col gap-6'>
+                                <input className={`w-72 p-3 rounded border-2 ${error ? 'border-red-500' : 'border-[#757873]'}`} type="text" placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} required/>
+                                <input className={`w-72 p-3 rounded border-2 ${error ? 'border-red-500' : 'border-[#757873]'}`} type="password" placeholder='Contraseña' value={password} onChange={(e) => setPassword(e.target.value)} required />
+                                {error && <p className='text-red-500'>Usuario o contraseña incorrectos</p>}
                             </form>
                         </div>
-                        <button className='bg-[#345071] rounded w-72 p-2 text-white font-semibold '>Ingresar</button>
+                        <button className='bg-[#345071] rounded w-72 p-2 text-white font-semibold' onClick={handleSubmit} >Ingresar</button>
                     </div>
                 </div>
                 <div className='flex-grow h-1/6 flex items-center justify-center'>
