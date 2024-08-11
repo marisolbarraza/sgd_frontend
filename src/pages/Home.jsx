@@ -1,9 +1,11 @@
 
-export function Home({apellido, nombre}) {
+export function Home() {
   return (
     <>
-        <strong>{apellido}</strong>
-        <strong>{nombre}</strong>
+        {/* <strong>{apellido}</strong>
+        <strong>{nombre}</strong> */}
+
+        <h1>Hola mundo</h1>
     </>
   )
 }

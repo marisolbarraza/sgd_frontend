@@ -1,22 +1,44 @@
 import { useState } from "react";
 import { BsPersonCircle } from "react-icons/bs";
+// import { useNavigate } from "react-router-dom";
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(false); 
+    // const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
     
-        // Aquí debes agregar la lógica de validación correcta
-        if (email !== 'user@example.com' || password !== 'password') {
-            setError(true);
-        } else {
+        try {
+            const response = await fetch('http://localhost:8080/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Credenciales incorrectas');
+            }
+
+            const data = await response.json();
+            const token = data.token;
+            
+            localStorage.setItem('token', token); // Almacenar el token en localStorage
             setError(false);
-          // Lógica para iniciar sesión
+            console.log('Token JWT:', token);
+            // navigate('/Home');
+            // // Redirigir o realizar alguna acción después de obtener el token
+            
+        } catch (error) {
+            setError(true);
+            console.error('Error de autenticación:', error.message);
         }
-      };
+    };
+
     return (
     <div className='flex h-screen '>
         <div className=' w-1/2 bg-[#345071] flex-col justify-center items-center hidden lg:flex'>
@@ -28,16 +50,18 @@ function Login() {
         <div className='w-full lg:w-1/2 h-screen lg:h-auto flex flex-col'>
                 <div className='flex-grow h-5/6 flex items-center justify-center'>
                     <div className='flex flex-col items-center justify-center gap-8 pt-20 pb-20 '>
-                        <BsPersonCircle className='w-16 h-16 text-[#345071] ' />
+                        <BsPersonCircle className='w-16 h-16 text-[#345071] lg:block hidden ' />
+                        <img src="/logoSGD_blue_Iniciales.svg" className="lg:hidden block w-30" alt="" />
                         <h2 className='text-2xl font-semibold'>Iniciar sesión</h2>
                         <div>
                             <form action="" onSubmit={handleSubmit} className='flex flex-col gap-6'>
                                 <input className={`w-72 p-3 rounded border-2 ${error ? 'border-red-500' : 'border-[#757873]'}`} type="text" placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} required/>
                                 <input className={`w-72 p-3 rounded border-2 ${error ? 'border-red-500' : 'border-[#757873]'}`} type="password" placeholder='Contraseña' value={password} onChange={(e) => setPassword(e.target.value)} required />
                                 {error && <p className='text-red-500'>Usuario o contraseña incorrectos</p>}
+                                <button className={`bg-[#345071] rounded w-72 p-2 text-white font-semibol ${error?'mt-0' :'mt-12'}`} type="submit" >Ingresar</button>
                             </form>
                         </div>
-                        <button className='bg-[#345071] rounded w-72 p-2 text-white font-semibold' onClick={handleSubmit} >Ingresar</button>
+                        
                     </div>
                 </div>
                 <div className='flex-grow h-1/6 flex items-center justify-center'>
